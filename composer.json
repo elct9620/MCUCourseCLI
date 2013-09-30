@@ -1,0 +1,18 @@
+{
+    "name": "elct9620/mcu-course-cli",
+    "description": "Ming Chuan University Course Command Line Tools",
+    "require": {
+        "illuminate/console": "4.*",
+        "guzzle/guzzle": "3.*",
+        "symfony/dom-crawler": "2.*",
+        "symfony/css-selector": "2.*",
+        "illuminate/database": "4.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "蒼時弦也",
+            "email": "elct9620@frost.tw"
+        }
+    ]
+}

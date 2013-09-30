@@ -5,6 +5,7 @@ namespace MCUCourseCLI\Console;
 use Symfony\Component\Console\Application as BaseApplication;
 
 use MCUCourseCLI\MCUCourseCLI;
+use MCUCourseCLI\Command;
 
 class Application extends BaseApplication {
 
@@ -26,5 +27,13 @@ EOF;
   public function getHelp()
   {
     return self::$logo . parent::getHelp();
+  }
+
+  protected function getDefaultCommands()
+  {
+    $commands = parent::getDefaultCommands();
+    $commands[] = new Command\InitCommand();
+
+    return $commands;
   }
 }

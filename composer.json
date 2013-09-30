@@ -8,6 +8,12 @@
         "symfony/css-selector": "2.*",
         "illuminate/database": "4.*"
     },
+    "bin": ["bin/"],
+    "autoload": {
+      "psr-0": {
+        "MCUCourseCLI": "src/"
+      }
+    },
     "license": "MIT",
     "authors": [
         {

@@ -21,7 +21,7 @@ class MCUClient {
       $this->queryPage = $page;
     }
 
-    $this->client = new Client($baseURL);
+    $this->client = new Client($this->baseURL);
   }
 
   public function setPage($page)
@@ -30,13 +30,13 @@ class MCUClient {
     return $this;
   }
 
-  public function get($params)
+  public function doGet($params = array())
   {
     $this->lastRequest = $this->client->get($this->queryPage, $this->header, $params);
     return $this;
   }
 
-  public function post($params)
+  public function doPost($params = array())
   {
     $this->lastRequest = $this->client->post($this->queryPage, $this->header, $params);
     return $this;
@@ -44,11 +44,15 @@ class MCUClient {
 
   public function getBody()
   {
-    if($body) {
+    if($this->body) {
       return $this->body;
     }
 
-    $response = $this->client->send();
+    if($this->lastRequest == null) {
+      return "";
+    }
+
+    $response = $this->lastRequest->send();
     $big5Body = $response->getBody();
 
     $this->body = mb_convert_encoding($big5Body, "UTF-8", "big5");

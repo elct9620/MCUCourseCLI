@@ -6,6 +6,7 @@ use Illuminate\Console\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
+use MCUCourseCLI\Config;
 use MCUCourseCLI\Parser\DepartmentParser;
 
 class InitCommand extends BaseCommand {

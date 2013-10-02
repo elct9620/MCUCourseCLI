@@ -4,6 +4,7 @@ namespace MCUCourseCLI\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
 
+use MCUCourseCLI\Config;
 use MCUCourseCLI\MCUCourseCLI;
 use MCUCourseCLI\Command;
 
@@ -21,7 +22,8 @@ EOF;
 
   public function __construct()
   {
-    parent::__construct("MCUCourseCLI Tools", MCUCourseCLI::VERSION);
+    $config = new Config();
+    parent::__construct("MCUCourseCLI Tools", $config->getVersion());
   }
 
   public function getHelp()

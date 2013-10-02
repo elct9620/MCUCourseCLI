@@ -4,11 +4,13 @@ namespace MCUCourseCLI;
 
 class Config {
 
+  protected static $instance = null;
+
   protected $workPath = null;
 
   protected $config = array();
 
-  public function __construct($workPath = null)
+  private function __construct($workPath = null)
   {
     $this->workPath = getcwd();
 
@@ -17,6 +19,17 @@ class Config {
     }
 
     $this->parseConfigFile();
+  }
+
+  public static function getInstance($workPath = null)
+  {
+    if(self::$instance && self::$instance instanceof Config) {
+      return self::$instance;
+    }
+
+    self::$instance = new Config($workPath);
+    return self::$instance;
+
   }
 
   public function getAll()

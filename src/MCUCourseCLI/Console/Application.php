@@ -22,7 +22,7 @@ EOF;
 
   public function __construct()
   {
-    $config = new Config();
+    $config = Config::getInstance();
     parent::__construct("MCUCourseCLI Tools", $config->getVersion());
   }
 

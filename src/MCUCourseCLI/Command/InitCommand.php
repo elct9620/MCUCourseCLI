@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 use MCUCourseCLI\Config;
+use MCUCourseCLI\Database;
 use MCUCourseCLI\Parser\DepartmentParser;
 
 class InitCommand extends BaseCommand {
@@ -42,13 +43,6 @@ class InitCommand extends BaseCommand {
 	 */
 	public function fire()
 	{
-    $parser = new DepartmentParser();
-    $data = $parser->parse();
-
-    $this->comment("All departments:");
-    foreach($data["departments"] as $code => $department) {
-      $this->info("[{$code}] {$department}");
-    }
 	}
 
 	/**

@@ -4,7 +4,7 @@ use MCUCourseCLI\Migration;
 
 class CreateCoursesTable extends Migration {
   public function up() {
-    $this->shcema()->create('courses', function($table)
+    $this->schema()->create('courses', function($table)
     {
       $table->increments('id');
       $table->integer('system');
@@ -18,9 +18,9 @@ class CreateCoursesTable extends Migration {
       $table->integer('year');
       $table->string('class_room');
       $table->integer('camps');
-      $table->integer('type');
+      $table->integer('select_type');
       $table->integer('credit');
-      $table->integer('type');
+      $table->integer('class_type');
       $table->integer('semester');
       $table->timestamps();
     });

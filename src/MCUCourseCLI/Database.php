@@ -2,17 +2,23 @@
 
 namespace MCUCourseCLI;
 
+use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Database {
 
   private static $instance = null;
   protected $capsule = null;
+  protected $resolver = null;
 
   private function __construct()
   {
     if(is_null($this->capsule)) {
       $this->capsule = new Capsule;
+    }
+
+    if(is_null($this->resolver)) {
+      $this->resolver = new ConnectionResolver;
     }
 
     $config = Config::getInstance();
@@ -21,6 +27,9 @@ class Database {
     $this->capsule->addConnection($connection);
 
     $this->prepareSQLite($connection); // Auto create sqlite file
+
+    $this->resolver->addConnection('default', $this->capsule->getConnection());
+    $this->resolver->setDefaultConnection('default');
 
     $this->capsule->setAsGlobal();
     $this->capsule->bootEloquent();
@@ -39,6 +48,11 @@ class Database {
   public function getConnection($name = null)
   {
     return $this->capsule->getConnection($name);
+  }
+
+  public function getResolver()
+  {
+    return $this->resolver;
   }
 
   private function prepareSQLite($connection)

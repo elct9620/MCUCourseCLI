@@ -7,12 +7,14 @@ class Config {
   protected static $instance = null;
 
   protected $workPath = null;
+  protected $commandPath = null;
 
   protected $config = array();
 
   private function __construct($workPath = null)
   {
     $this->workPath = getcwd();
+    $this->commandPath = __DIR__;
 
     if($workPath && file_exists($workPath)) {
       $this->workPath = $workPath;
@@ -50,6 +52,10 @@ class Config {
   public function getWorkPath()
   {
     return $this->workPath;
+  }
+  public function getCommandPath()
+  {
+    return $this->commandPath;
   }
 
   private function parseConfigFile()

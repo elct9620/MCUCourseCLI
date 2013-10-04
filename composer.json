@@ -6,13 +6,15 @@
         "guzzle/guzzle": "3.*",
         "symfony/dom-crawler": "2.*",
         "symfony/css-selector": "2.*",
-        "illuminate/database": "4.*"
+        "illuminate/database": "4.*",
+        "illuminate/filesystem": "4.*"
     },
     "bin": ["bin/"],
     "autoload": {
       "psr-0": {
         "MCUCourseCLI": "src/"
-      }
+      },
+      "classmap": ["src/migrations"]
     },
     "license": "MIT",
     "authors": [

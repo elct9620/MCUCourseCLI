@@ -36,6 +36,7 @@ EOF;
     $commands = parent::getDefaultCommands();
     $commands[] = new Command\InitCommand();
     $commands[] = new Command\MigrateCommand();
+    $commands[] = new Command\DepartmentCommand();
 
     return $commands;
   }

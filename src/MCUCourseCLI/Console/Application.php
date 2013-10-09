@@ -37,6 +37,7 @@ EOF;
     $commands[] = new Command\InitCommand();
     $commands[] = new Command\MigrateCommand();
     $commands[] = new Command\DepartmentCommand();
+    $commands[] = new Command\CourseCommand();
 
     return $commands;
   }

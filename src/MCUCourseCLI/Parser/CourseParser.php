@@ -110,4 +110,21 @@ class CourseParser {
     }
     return $teachers;
   }
+
+  protected function getTime($timeData) {
+    $timeDatas = array();
+
+    $weekPattern = "/星期\s([0-9]{1})\s:([\s0-9]+)\s節/";
+    $timePattern = "/\s([0-9]{1,2})\s/";
+    $weekMatches = array();
+    preg_match_all($weekPattern, $timeData, $weekMatches);
+
+    foreach($weekMatches[2] as $index => $timeData) {
+      $timeMatches = array();
+      preg_match_all($timePattern, $timeData, $timeMatches);
+      $timeDatas[(string) $weekMatches[1][$index]] = $timeMatches[1];
+    }
+
+    return $timeDatas;
+  }
 }

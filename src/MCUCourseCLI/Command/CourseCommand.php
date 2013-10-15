@@ -68,6 +68,10 @@ class CourseCommand extends BaseCommand {
         case 4:
           $parsedData['teacher'] = $this->getTeacher($node);
           break;
+        case 5:
+          $parsedData['time'] = $this->getTime($nodeData);
+          var_dump($parsedData['time']);
+          break;
       }
     };
 

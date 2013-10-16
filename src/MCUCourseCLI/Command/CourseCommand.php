@@ -45,7 +45,7 @@ class CourseCommand extends BaseCommand {
 	{
     $progressHelper = $this->getHelperSet()->get('progress');
 
-    $columnFunction = function(Crawler $node, $index){
+    $columnFunction = function(Crawler $node, $index) use (&$count){
       $parsedData = &$this->lastParsedData;
       $nodeData = $node->text();
       switch($index) {
@@ -54,8 +54,8 @@ class CourseCommand extends BaseCommand {
           break;
         case 1:
           $courseCodeAndName = $this->splitCourseCodeAndName($nodeData);
-          $parsedData['course_code'] = $courseCodeAndName[0];
-          $parsedData['course_name'] = $courseCodeAndName[1];
+          $parsedData['course_code'] = trim($courseCodeAndName['course_code']);
+          $parsedData['course_name'] = trim($courseCodeAndName['course_name']);
           break;
         case 2:
           $parsedData['class_code'] = trim($nodeData);
@@ -70,7 +70,30 @@ class CourseCommand extends BaseCommand {
           break;
         case 5:
           $parsedData['time'] = $this->getTime($nodeData);
-          var_dump($parsedData['time']);
+          break;
+        case 6:
+          $parsedData['year'] = trim($nodeData);
+          break;
+        case 7:
+          $classRoomAndCamps = $this->getRoomAndCamps($nodeData);
+          if(isset($classRoomAndCamps['class_room'])) {
+            $parsedData['class_room'] = $classRoomAndCamps['class_room'];
+          }
+          if(isset($classRoomAndCamps['camps'])) {
+            $parsedData['camps'] = $classRoomAndCamps['camps'];
+          }
+          break;
+        case 8:
+          $parsedData['select_type'] = $this->getSelectType($nodeData);
+          break;
+        case 9:
+          $parsedData['credit'] = trim($nodeData);
+          break;
+        case 10:
+          // Class Type
+          break;
+        case 12:
+          $parsedData['semester'] = $this->getSemester($nodeData);
           break;
       }
     };
@@ -83,8 +106,11 @@ class CourseCommand extends BaseCommand {
       $this->lastParsedData = array();
     };
 
-    $this->info('開始分析課程資料⋯⋯');
+    $this->info('開始截取課程資料⋯⋯');
     $parser = new CourseParser($rowFunction, $columnFunction);
+    $parser->analyticDOM();
+
+    $this->info('開始分析課程資料⋯⋯');
     $progressHelper->start($this->output, $parser->count());
     $courseData = $parser->parse();
     $progressHelper->finish();

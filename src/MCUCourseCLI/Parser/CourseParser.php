@@ -38,6 +38,25 @@ class CourseParser {
     '碩士專班' => 6
   );
 
+  protected $campsMap = array(
+    '台北' => 1,
+    '桃園' => 2,
+    '基河' => 3
+  );
+
+  protected $selectTypeMap = array(
+    '通識' => 1,
+    '必修' => 2,
+    '選修' => 3,
+    '教育' => 4
+  );
+
+  protected $semesterMap = array(
+    '上學期' => 1,
+    '下學期' => 2,
+    '全學年' => 3
+  );
+
   public function __construct(Closure $rowFunction, Closure $columnFunction, $queryType = "normal")
   {
     $this->setQueryCode($queryType);
@@ -74,7 +93,7 @@ class CourseParser {
     return $this->courseData;
   }
 
-  private function analyticDOM()
+  public function analyticDOM()
   {
     if(is_null($this->courseElement)) {
       $this->courseElement = $this->crawler->filter("body > table tr");
@@ -91,7 +110,11 @@ class CourseParser {
   }
 
   protected function splitCourseCodeAndName($courseName) {
-    return explode(' ', trim($courseName)); // Should return array has 1 to 2 element
+     $courseData = explode(' ', trim($courseName)); // Should return array has 1 to 2 element
+     return array(
+       'course_code' => substr($courseData[0], 2), // Remove chinese space can't trim
+       'course_name' => trim($courseData[1])
+     );
   }
 
   protected function getPeopleStatus($peopleStatus) {
@@ -126,5 +149,29 @@ class CourseParser {
     }
 
     return $timeDatas;
+  }
+
+  protected function getRoomAndCamps($nodeData) {
+    $pattern = "/([a-zA-Z0-9]+)【([^】]+)】/";
+    $matches = array();
+    preg_match_all($pattern, $nodeData, $matches);
+
+    $roomAndCamps = array();
+
+    foreach($matches[0] as $index => $data) {
+      $camps = $this->campsMap[trim($matches[2][$index])];
+      $roomAndCamps['class_room'][] = $matches[1][$index];
+      $roomAndCamps['camps'][] =  $camps;
+    }
+
+    return $roomAndCamps;
+  }
+
+  protected function getSelectType($selectData) {
+    return $this->selectTypeMap[trim($selectData)];
+  }
+
+  protected function getSemester($semester) {
+    return $this->semesterMap[trim($semester)];
   }
 }

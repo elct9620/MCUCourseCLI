@@ -59,4 +59,9 @@ class MCUClient {
 
     return $this->body;
   }
+
+  public function clear()
+  {
+    $this->body = null;
+  }
 }

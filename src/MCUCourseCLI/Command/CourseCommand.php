@@ -64,10 +64,17 @@ class CourseCommand extends BaseCommand {
     $progressHelper->start($this->output, $parser->count());
     $courseData = $parser->parse();
     $progressHelper->finish();
+
+    $this->info('開始分析必修分組資料⋯⋯');
+    $parser->setQueryCode('require');
+    $parser->getData();
+    $progressHelper->start($this->output, $parser->count());
+    $courseData = array_merge($courseData, $parser->parse()); // Append new course data
+    $progressHelper->finish();
     $this->info('課程資料分析完成');
 
     $this->info('寫入課程資料到資料庫');
-    $progressHelper->start($this->output, $parser->count());
+    $progressHelper->start($this->output, count($courseData));
     foreach($courseData as $data) {
       $course = Course::where('class_code', '=', $data['class_code'])->first();
       if($course) { // Skip exists data
@@ -75,6 +82,7 @@ class CourseCommand extends BaseCommand {
         continue;
       }
 
+      // Skip some data not ready
       unset($data['time']);
       unset($data['class_room']);
       unset($data['camps']);
@@ -102,7 +110,7 @@ class CourseCommand extends BaseCommand {
           $parsedData['course_name'] = trim($courseCodeAndName['course_name']);
           break;
         case 2:
-          $parsedData['class_code'] = trim($nodeData);
+          $parsedData['class_code'] = $this->getClassCode($nodeData);
           break;
         case 3:
           $peopleStatus = $this->getPeopleStatus($nodeData);

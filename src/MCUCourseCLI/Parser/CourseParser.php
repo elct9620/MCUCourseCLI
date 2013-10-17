@@ -12,7 +12,8 @@ use MCUCourseCLI\MCUClient;
 class CourseParser {
 
   protected $queryCodes = array(
-    'normal' => 0
+    'normal' => 0,
+    'require' => 4
   );
   protected $queryCode = 0;
   protected $queryPage = "query_7_1.asp";
@@ -59,11 +60,9 @@ class CourseParser {
 
   public function __construct(Closure $rowFunction, Closure $columnFunction, $queryType = "normal")
   {
-    $this->setQueryCode($queryType);
     $this->client = new MCUClient($this->queryPage);
-    $this->body = $this->client->doPost(array('mk' => $this->queryCode))->getBody();
-    $this->crawler = new Crawler();
-    $this->crawler->addHTMLContent($this->body, "UTF-8");
+    $this->setQueryCode($queryType);
+    $this->getData();
 
     $this->rowFunction = $rowFunction->bindTo($this, $this); // Notice: make closure function $this refere to this object
     $this->columnFunction = $columnFunction->bindTo($this, $this);
@@ -84,6 +83,19 @@ class CourseParser {
   {
     $this->analyticDOM();
     return $this->courseElement->count() - 1; // Skip column header
+  }
+
+  public function getData()
+  {
+    $this->client->clear();
+    $this->body = $this->client->doPost(array('mk' => $this->queryCode))->getBody();
+    if($this->crawler == null) {
+      $this->crawler = new Crawler();
+    }
+    $this->crawler->clear(); // Remove Old Nodes
+    $this->crawler->addHTMLContent($this->body, "UTF-8");
+    $this->courseElement = null;
+    $this->courseData = array();
   }
 
   public function parse()
@@ -115,6 +127,11 @@ class CourseParser {
        'course_code' => substr($courseData[0], 2), // Remove chinese space can't trim
        'course_name' => trim($courseData[1])
      );
+  }
+
+  protected function getClassCode($classData) {
+    $classData = explode(' ', trim($classData));
+    return $classData[0];
   }
 
   protected function getPeopleStatus($peopleStatus) {

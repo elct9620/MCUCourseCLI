@@ -9,6 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use MCUCourseCLI\Config;
 use MCUCourseCLI\Parser\CourseParser;
+use MCUCourseCLI\Model\Course;
 
 class CourseCommand extends BaseCommand {
 
@@ -45,7 +46,50 @@ class CourseCommand extends BaseCommand {
 	{
     $progressHelper = $this->getHelperSet()->get('progress');
 
-    $columnFunction = function(Crawler $node, $index) use (&$count){
+    $columnFunction = $this->getColumnClosure();
+
+    $rowFunction = function(Crawler $node, $index) use ($progressHelper) { // Notice: $this will refere to CourseParser instance
+      if($index == 0) return; // Skip table header
+      $progressHelper->advance();
+      $node->filter('td')->each($this->columnFunction);
+      $this->courseData[] = $this->lastParsedData;
+      $this->lastParsedData = array();
+    };
+
+    $this->info('開始截取課程資料⋯⋯');
+    $parser = new CourseParser($rowFunction, $columnFunction);
+    $parser->analyticDOM();
+
+    $this->info('開始分析課程資料⋯⋯');
+    $progressHelper->start($this->output, $parser->count());
+    $courseData = $parser->parse();
+    $progressHelper->finish();
+    $this->info('課程資料分析完成');
+
+    $this->info('寫入課程資料到資料庫');
+    $progressHelper->start($this->output, $parser->count());
+    foreach($courseData as $data) {
+      $course = Course::where('class_code', '=', $data['class_code'])->first();
+      if($course) { // Skip exists data
+        $progressHelper->advance();
+        continue;
+      }
+
+      unset($data['time']);
+      unset($data['class_room']);
+      unset($data['camps']);
+      unset($data['teacher']);
+      Course::create($data);
+
+      $progressHelper->advance();
+    }
+    $progressHelper->finish();
+    $this->info('課程資料寫入完成');
+	}
+
+  protected function getColumnClosure()
+  {
+    return function(Crawler $node, $index) use (&$count){
       $parsedData = &$this->lastParsedData;
       $nodeData = $node->text();
       switch($index) {
@@ -97,25 +141,7 @@ class CourseCommand extends BaseCommand {
           break;
       }
     };
-
-    $rowFunction = function(Crawler $node, $index) use ($progressHelper) { // Notice: $this will refere to CourseParser instance
-      if($index == 0) return; // Skip table header
-      $progressHelper->advance();
-      $node->filter('td')->each($this->columnFunction);
-      $this->courseData[] = $this->lastParsedData;
-      $this->lastParsedData = array();
-    };
-
-    $this->info('開始截取課程資料⋯⋯');
-    $parser = new CourseParser($rowFunction, $columnFunction);
-    $parser->analyticDOM();
-
-    $this->info('開始分析課程資料⋯⋯');
-    $progressHelper->start($this->output, $parser->count());
-    $courseData = $parser->parse();
-    $progressHelper->finish();
-    $this->info('課程資料分析完成');
-	}
+  }
 
 	/**
 	 * Get the console command arguments.

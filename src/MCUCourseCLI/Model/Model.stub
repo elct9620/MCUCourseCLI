@@ -1,8 +1,6 @@
 <?php
 
-namespace MCUCouresCLI\Model;
-
-use Illuminate\Database\Eloquent\Model;
+namespace MCUCourseCLI\Model;
 
 class {{class}} extends Model {
 

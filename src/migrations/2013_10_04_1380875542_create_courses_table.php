@@ -13,11 +13,7 @@ class CreateCoursesTable extends Migration {
       $table->string('class_code')->unique();
       $table->integer('max_people');
       $table->integer('selected_people');
-      $table->string('teacher');
-      $table->string('time');
       $table->integer('year');
-      $table->string('class_room');
-      $table->integer('camps');
       $table->integer('select_type');
       $table->integer('credit');
       $table->integer('class_type');

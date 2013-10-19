@@ -10,6 +10,8 @@ use Symfony\Component\DomCrawler\Crawler;
 use MCUCourseCLI\Config;
 use MCUCourseCLI\Parser\CourseParser;
 use MCUCourseCLI\Model\Course;
+use MCUCourseCLI\Model\Teacher;
+use MCUCourseCLI\Model\CourseTime;
 
 class CourseCommand extends BaseCommand {
 
@@ -82,12 +84,49 @@ class CourseCommand extends BaseCommand {
         continue;
       }
 
-      // Skip some data not ready
+      $teacherData = $data['teacher'];
+      $classRoomData = null;
+      $campsData = null;
+      if(isset($data['class_room'])) {
+        $classRoomData = $data['class_room'];
+      }
+      if(isset($data['camps'])) {
+        $campsData = $data['camps'];
+      }
+      $times = $data['time'];
+      // Skip relation table's data
       unset($data['time']);
       unset($data['class_room']);
       unset($data['camps']);
       unset($data['teacher']);
-      Course::create($data);
+
+      $course = Course::create($data);
+      $classRoom = null;
+      $camps = null;
+      $courseDay = null;
+      $courseTime = null;
+      foreach($teacherData as $index => $teacher) {
+        if(isset($classRoomData[$index])) $classRoom = $classRoomData[$index];
+        if(isset($campsData[$index])) $camps = $campsData[$index];
+        if(isset($times[$index]['course_day'])) $courseDay = $times[$index]['course_day'];
+        if(isset($times[$index]['time'])) $courseTime = $times[$index]['time'];
+
+        $teacher = $course->teachers()->save(Teacher::create(array(
+          'teacher' => $teacher['name'],
+          'teacher_type' => $teacher['type'],
+          'class_room' => $classRoom,
+          'camps' => $camps,
+          'course_day' => $courseDay
+        )));
+
+        if(is_array($courseTime)) {
+          foreach($courseTime as $time) {
+            $teacher->times()->save(CourseTime::create(array('time' => $time)));
+          }
+        }
+
+
+      }
 
       $progressHelper->advance();
     }
@@ -174,5 +213,4 @@ class CourseCommand extends BaseCommand {
 			//array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
 		);
 	}
-
 }

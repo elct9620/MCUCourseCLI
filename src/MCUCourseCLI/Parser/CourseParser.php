@@ -58,6 +58,11 @@ class CourseParser {
     '全學年' => 3
   );
 
+  protected $teacherTypeMap = array(
+    '正課' => 1,
+    '實習' => 2
+  );
+
   public function __construct(Closure $rowFunction, Closure $columnFunction, $queryType = "normal")
   {
     $this->client = new MCUClient($this->queryPage);
@@ -131,7 +136,7 @@ class CourseParser {
 
   protected function getClassCode($classData) {
     $classData = explode(' ', trim($classData));
-    return $classData[0];
+    return substr($classData[0], 2); // Remove chinese space can't trim
   }
 
   protected function getPeopleStatus($peopleStatus) {
@@ -144,7 +149,11 @@ class CourseParser {
     $teacherElements = explode('<br>', $teacherRawData);
     foreach($teacherElements as $teacher) {
       $teacher = explode(':', $teacher);
-      $teacherData['type'] = $teacher[0];
+      if(isset($this->teacherTypeMap[$teacher[0]])) {
+        $teacherData['type'] = $this->teacherTypeMap[$teacher[0]];
+      } else {
+        $teacherData['type'] = 0;
+      }
       $teacherData['name'] = $teacher[1];
       $teachers[] = $teacherData;
     }
@@ -162,7 +171,10 @@ class CourseParser {
     foreach($weekMatches[2] as $index => $timeData) {
       $timeMatches = array();
       preg_match_all($timePattern, $timeData, $timeMatches);
-      $timeDatas[(string) $weekMatches[1][$index]] = $timeMatches[1];
+      $timeDatas[] = array(
+        'course_day' => $weekMatches[1][$index],
+        'time' => $timeMatches[1]
+      );
     }
 
     return $timeDatas;

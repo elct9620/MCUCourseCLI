@@ -47,4 +47,8 @@ class Course extends Model {
     2 => '下學期',
     3 => '全學年'
   );
+
+  public function teachers() {
+    return $this->hasMany('\MCUCourseCLI\Model\Teacher'); // This seems bad, fix later ...
+  }
 }

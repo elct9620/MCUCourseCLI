@@ -154,7 +154,7 @@ class CourseParser {
       } else {
         $teacherData['type'] = 0;
       }
-      $teacherData['name'] = $teacher[1];
+      $teacherData['name'] = trim($teacher[1]);
       $teachers[] = $teacherData;
     }
     return $teachers;

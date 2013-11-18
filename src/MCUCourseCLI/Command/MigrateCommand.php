@@ -8,10 +8,10 @@ use Symfony\Component\Console\Input\InputArgument;
 
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
-use Illuminate\Filesystem\Filesystem;
 
 use MCUCourseCLI\Config;
 use MCUCourseCLI\Database;
+use MCUCourseCLI\Filesystem;
 
 class MigrateCommand extends BaseCommand {
 
@@ -64,6 +64,7 @@ class MigrateCommand extends BaseCommand {
 
     switch(true) {
       case $rollback:
+        //TODO: Fix pahr can't run rollback
         $migrator->rollback();
         break;
       default:

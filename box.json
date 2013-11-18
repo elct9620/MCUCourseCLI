@@ -1,0 +1,30 @@
+{
+  "chmod": "0755",
+  "directories": [
+    "src/"
+  ],
+  "files": [
+    "config.ini"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    },
+    {
+      "name": "*.pem",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    },
+    {
+      "name": "*.md5",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    }
+  ],
+  "git-version": "package_version",
+  "main": "bin/MCUCourseCLI.php",
+  "output": "mcucli.phar",
+  "stub": true
+}

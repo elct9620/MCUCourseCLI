@@ -34,7 +34,6 @@ EOF;
   protected function getDefaultCommands()
   {
     $commands = parent::getDefaultCommands();
-    $commands[] = new Command\InitCommand();
     $commands[] = new Command\MigrateCommand();
     $commands[] = new Command\DepartmentCommand();
     $commands[] = new Command\CourseCommand();

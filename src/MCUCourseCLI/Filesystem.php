@@ -18,7 +18,9 @@ class Filesystem extends BaseFilesystem
 
     foreach($directoryIterator as $file)
     {
-      array_push($result, $file->getPathname());
+      if($file->isFile()) {
+        array_push($result, $file->getPathname());
+      }
     }
 
     return $result;

@@ -59,7 +59,7 @@ class CourseCommand extends BaseCommand {
     };
 
     $this->info('開始截取課程資料⋯⋯');
-    $parser = new CourseParser($rowFunction, $columnFunction);
+    $parser = new CourseParser($rowFunction, $columnFunction, $this->option('semester'));
     $parser->analyticDOM();
 
     $this->info('開始分析課程資料⋯⋯');
@@ -124,8 +124,6 @@ class CourseCommand extends BaseCommand {
             $teacher->times()->save(CourseTime::create(array('time' => $time)));
           }
         }
-
-
       }
 
       $progressHelper->advance();
@@ -198,7 +196,7 @@ class CourseCommand extends BaseCommand {
 	protected function getArguments()
 	{
 		return array(
-			//array('example', InputArgument::REQUIRED, 'An example argument.'),
+      //array('example', InputArgument::REQUIRED, 'An example argument.'),
 		);
 	}
 
@@ -210,7 +208,7 @@ class CourseCommand extends BaseCommand {
 	protected function getOptions()
 	{
 		return array(
-			//array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
+			array('semester', 's', InputOption::VALUE_OPTIONAL, 'Set semester to fetch, using 1 as first semester and 2 as secondary semester', 1),
 		);
 	}
 }

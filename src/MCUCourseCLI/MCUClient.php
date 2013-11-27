@@ -9,6 +9,7 @@ class MCUClient {
   protected $baseURL = "http://www.mcu.edu.tw/student/new-query/sel-query/";
   protected $queryPage = null;
   protected $header = array();
+  protected $semester = 1;
 
   protected $client = null;
   protected $lastRequest = null;
@@ -22,6 +23,12 @@ class MCUClient {
     }
 
     $this->client = new Client($this->baseURL);
+  }
+
+  public function setSemester($semester)
+  {
+    $this->semester = $semester;
+    return $this;
   }
 
   public function setPage($page)
@@ -51,6 +58,9 @@ class MCUClient {
     if($this->lastRequest == null) {
       return "";
     }
+
+    // Setting Semester
+    $this->lastRequest->addCookie('ggdb', $this->semester);
 
     $response = $this->lastRequest->send();
     $big5Body = $response->getBody();

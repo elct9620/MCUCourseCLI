@@ -63,9 +63,10 @@ class CourseParser {
     '實習' => 2
   );
 
-  public function __construct(Closure $rowFunction, Closure $columnFunction, $queryType = "normal")
+  public function __construct(Closure $rowFunction, Closure $columnFunction, $semester = 1, $queryType = "normal")
   {
     $this->client = new MCUClient($this->queryPage);
+    $this->client->setSemester($semester);
     $this->setQueryCode($queryType);
     $this->getData();
 

@@ -11,6 +11,9 @@ class CreateCourseTimeTable extends Migration
       $table->integer('time');
       $table->integer('teacher_id');
       $table->timestamps();
+
+      $table->index('time');
+      $table->index('teacher_id');
     });
   }
 

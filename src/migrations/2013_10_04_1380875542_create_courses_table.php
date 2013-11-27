@@ -19,6 +19,9 @@ class CreateCoursesTable extends Migration {
       $table->integer('class_type');
       $table->integer('semester');
       $table->timestamps();
+
+      $this->index('course_code');
+      $this->index('course_name');
     });
   }
 

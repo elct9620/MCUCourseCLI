@@ -10,7 +10,7 @@ class CreateCoursesTable extends Migration {
       $table->integer('system');
       $table->string('course_code');
       $table->string('course_name');
-      $table->string('class_code')->unique();
+      $table->string('class_code');
       $table->integer('max_people');
       $table->integer('selected_people');
       $table->integer('year');

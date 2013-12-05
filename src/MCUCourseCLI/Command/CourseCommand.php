@@ -78,7 +78,7 @@ class CourseCommand extends BaseCommand {
     $this->info('寫入課程資料到資料庫');
     $progressHelper->start($this->output, count($courseData));
     foreach($courseData as $data) {
-      $course = Course::where('class_code', '=', $data['class_code'])->first();
+      $course = Course::where('class_code', '=', $data['class_code'])->where('course_code', '=', $data['course_code'])->first();
       if($course) { // Skip exists data
         $progressHelper->advance();
         continue;

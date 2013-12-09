@@ -18,6 +18,8 @@ class CourseParser {
   protected $queryCode = 0;
   protected $queryPage = "query_7_1.asp";
   protected $client = null;
+  protected $semester = 1;
+  protected $query = array();
 
   protected $crawler = null;
   protected $body = null;
@@ -67,6 +69,8 @@ class CourseParser {
   {
     $this->client = new MCUClient($this->queryPage);
     $this->client->setSemester($semester);
+    // Cache Semester
+    $this->semester = $semester;
     $this->setQueryCode($queryType);
     $this->getData();
 
@@ -85,6 +89,14 @@ class CourseParser {
     return $this->queryCode; // normal type should exists
   }
 
+  public function doPEQuery($camps = 1)
+  {
+    $this->client = new MCUClient("query_10_1.asp");
+    $this->client->setSemester($this->semester);
+    $this->query = array('sch' => $camps);
+    $this->getData();
+  }
+
   public function count()
   {
     $this->analyticDOM();
@@ -93,8 +105,9 @@ class CourseParser {
 
   public function getData()
   {
+    $query = array_merge($this->query, array('mk' => $this->queryCode));
     $this->client->clear();
-    $this->body = $this->client->doPost(array('mk' => $this->queryCode))->getBody();
+    $this->body = $this->client->doPost($query)->getBody();
     if($this->crawler == null) {
       $this->crawler = new Crawler();
     }

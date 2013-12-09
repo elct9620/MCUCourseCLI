@@ -73,6 +73,20 @@ class CourseCommand extends BaseCommand {
     $progressHelper->start($this->output, $parser->count());
     $courseData = array_merge($courseData, $parser->parse()); // Append new course data
     $progressHelper->finish();
+
+    $this->info('開始分析大三體育課程資料⋯⋯');
+    $parser->doPEQuery(1);
+    $parser->getData();
+    $progressHelper->start($this->output, $parser->count());
+    $courseData = array_merge($courseData, $parser->parse()); // Append new course data
+    $progressHelper->finish();
+
+    $parser->doPEQuery(2);
+    $parser->getData();
+    $progressHelper->start($this->output, $parser->count());
+    $courseData = array_merge($courseData, $parser->parse()); // Append new course data
+    $progressHelper->finish();
+
     $this->info('課程資料分析完成');
 
     $this->info('寫入課程資料到資料庫');
